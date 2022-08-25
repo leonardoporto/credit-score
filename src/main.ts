@@ -1,11 +1,17 @@
-import { VersioningType } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { RedocModule, RedocOptions } from '@nicholas.braun/nestjs-redoc';
 import { AppModule } from './app.module';
+import { RolesGuard } from './auth/roles.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+
+  app.useGlobalGuards(new RolesGuard(new Reflector()));
+
   app.enableVersioning({
     type: VersioningType.URI,
     prefix: 'api/v',
