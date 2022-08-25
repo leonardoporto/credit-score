@@ -15,6 +15,7 @@ import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/roles.decorator';
 import { Role } from '../auth/enums/role.enum';
+import { Patrimony } from './entities/patrimony.entity';
 
 @ApiTags('patrimony')
 @Controller('patrimony')
@@ -26,7 +27,9 @@ export class PatrimonyController {
   @UseGuards(JwtAuthGuard)
   @Roles(Role.Customer)
   @Post()
-  create(@Body() createPatrimonyDto: CreatePatrimonyDto) {
+  async create(
+    @Body() createPatrimonyDto: CreatePatrimonyDto,
+  ): Promise<Patrimony> {
     return this.patrimonyService.create(createPatrimonyDto);
   }
 

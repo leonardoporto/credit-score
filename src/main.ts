@@ -24,6 +24,8 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('core')
     .addTag('user')
+    .addTag('patrimony')
+    .addTag('debt')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -46,6 +48,14 @@ async function bootstrap() {
       {
         name: 'user Resources',
         tags: ['user'],
+      },
+      {
+        name: 'patrimony Resources',
+        tags: ['patrimony'],
+      },
+      {
+        name: 'debt Resources',
+        tags: ['debt'],
       },
     ],
   };

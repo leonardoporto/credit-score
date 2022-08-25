@@ -5,6 +5,11 @@ export class CreatePatrimonyDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
+  userId: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
   description: string;
 
   @ApiProperty()

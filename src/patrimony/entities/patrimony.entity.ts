@@ -7,6 +7,9 @@ export class Patrimony {
   public patrimonyId: string;
 
   @ApiProperty()
+  public userId: string;
+
+  @ApiProperty()
   public description: string;
 
   @ApiProperty()
@@ -17,6 +20,7 @@ export class Patrimony {
 
   constructor(data: PatrimonyInterface) {
     this.patrimonyId = data._id;
+    this.userId = data.userId;
     this.description = data.description;
     this.amount = data.amount;
     this.deletedAt = data.deletedAt;
