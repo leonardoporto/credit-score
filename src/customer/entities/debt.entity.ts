@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { Debt as DebtInterface } from '../interfaces/debt.interface';
+import { Debt as DebtInterface } from '../interfaces';
 
 export class Debt {
   @ApiProperty()

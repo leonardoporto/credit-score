@@ -1,5 +1,5 @@
 import { Connection } from 'mongoose';
-import { DebtSchema } from './schemas/debt.schema';
+import { DebtSchema } from '../schemas';
 
 export const debtsProviders = [
   {

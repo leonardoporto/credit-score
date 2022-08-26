@@ -1,5 +1,5 @@
 import { Connection } from 'mongoose';
-import { PatrimonySchema } from './schemas/patrimony.schema';
+import { PatrimonySchema } from '../schemas';
 
 export const patrimoniesProviders = [
   {

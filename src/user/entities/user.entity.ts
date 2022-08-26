@@ -23,4 +23,8 @@ export class User {
   validatePassword(password) {
     return password === this.password;
   }
+
+  invalidatePassword() {
+    this.password = null;
+  }
 }

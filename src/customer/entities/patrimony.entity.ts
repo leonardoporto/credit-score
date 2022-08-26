@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { Patrimony as PatrimonyInterface } from '../interfaces/patrimony.interface';
+import { Patrimony as PatrimonyInterface } from '../interfaces';
 
 export class Patrimony {
   @ApiProperty()
