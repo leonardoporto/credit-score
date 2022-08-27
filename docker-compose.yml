@@ -1,0 +1,40 @@
+version: "3.7"
+services:
+  db:
+    image: mongo:latest
+    container_name: credit-score-database
+    ports:
+      - 27018:27017
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./data/mongodb:/bitnami/mongodb/data/db
+
+  cache:
+    image: redis:latest
+    container_name: credit-score-cache
+    ports:
+      - 6379:6379
+    volumes:
+      - /etc/localtime:/etc/localtime
+
+  server:
+    container_name: credit-score
+    build:
+      context: .
+      target: development
+    volumes: 
+      - .:/usr/app
+    ports: 
+      - 7000:7000
+    command: yarn start:dev
+    environment:
+      - NODE_ENV=production
+      - APP=7000
+      - MONGO_URI=mongodb://database.credit-score.com.br:27018/credit-score
+      - REDIS_URI=cache.credit-score.com.br
+    links:
+      - db:database.credit-score.com.br
+      - cache:cache.credit-score.com.br
+    depends_on:
+      - db
+      - cache
