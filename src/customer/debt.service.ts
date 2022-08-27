@@ -1,5 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { isValidObjectId, Model } from 'mongoose';
 import { CreateDebtDto, UpdateDebtDto } from './dto';
 import { Debt } from './entities/debt.entity';
 import { Debt as DebtInterface } from './interfaces';
@@ -17,13 +22,14 @@ export class DebtService {
   }
 
   async update(id: string, updateDebtDto: UpdateDebtDto): Promise<Debt> {
+    await this.debtExists(id);
     return this.debtModel
       .findOneAndUpdate({ _id: id }, { $set: updateDebtDto }, { new: true })
       .then((result) => new Debt(result));
   }
 
   async findOne(id: string): Promise<Debt> {
-    return this.debtModel.findById(id).then((result) => new Debt(result));
+    return this.debtExists(id);
   }
 
   async findByUserId(userId: string): Promise<Debt[]> {
@@ -33,10 +39,24 @@ export class DebtService {
   }
 
   async remove(id: string): Promise<boolean> {
+    await this.debtExists(id);
     const result = await this.debtModel.updateOne(
       { _id: id },
       { $set: { deletedAt: new Date() } },
     );
     return result.acknowledged;
+  }
+
+  private debtExists(id: string): Promise<Debt> {
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException({ message: 'invalid debt Id' });
+    }
+    const debt = this.debtModel
+      .findOne({ _id: id, deletedAt: null })
+      .then((result) => new Debt(result));
+    if (!debt) {
+      throw new NotFoundException({ message: 'debt not found' });
+    }
+    return debt;
   }
 }

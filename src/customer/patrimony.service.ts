@@ -1,5 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { isValidObjectId, Model } from 'mongoose';
 import { CreatePatrimonyDto, UpdatePatrimonyDto } from './dto';
 import { Patrimony } from './entities/patrimony.entity';
 import { Patrimony as PatrimonyInterface } from './interfaces';
@@ -18,17 +23,20 @@ export class PatrimonyService {
 
   async update(
     id: string,
-    updateDebtDto: UpdatePatrimonyDto,
+    updatePatrimonyDto: UpdatePatrimonyDto,
   ): Promise<Patrimony> {
+    await this.patrimonyExists(id);
     return this.patrimomyModel
-      .findOneAndUpdate({ _id: id }, { $set: updateDebtDto }, { new: true })
+      .findOneAndUpdate(
+        { _id: id },
+        { $set: updatePatrimonyDto },
+        { new: true },
+      )
       .then((result) => new Patrimony(result));
   }
 
   async findOne(id: string): Promise<Patrimony> {
-    return this.patrimomyModel
-      .findById(id)
-      .then((result) => new Patrimony(result));
+    return this.patrimonyExists(id);
   }
 
   async findByUserId(userId: string): Promise<Patrimony[]> {
@@ -38,10 +46,24 @@ export class PatrimonyService {
   }
 
   async remove(id: string): Promise<boolean> {
+    await this.patrimonyExists(id);
     const result = await this.patrimomyModel.updateOne(
       { _id: id },
       { $set: { deletedAt: new Date() } },
     );
     return result.acknowledged;
+  }
+
+  private patrimonyExists(id: string): Promise<Patrimony> {
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException({ message: 'invalid patrimony Id' });
+    }
+    const patrimony = this.patrimomyModel
+      .findOne({ _id: id, deletedAt: null })
+      .then((result) => new Patrimony(result));
+    if (!patrimony) {
+      throw new NotFoundException({ message: 'patrimony not found' });
+    }
+    return patrimony;
   }
 }

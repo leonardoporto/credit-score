@@ -54,21 +54,25 @@ export class UserService {
   }
 
   async findOneByUsername(username: string): Promise<User | undefined> {
-    return this.userModel.findOne({ username }).then((data) => {
-      if (data) {
-        const user = new User(data);
-        user.setPassword(data.password);
-        return user;
-      }
-      return null;
-    });
+    return this.userModel
+      .findOne({ username, deletedAt: null })
+      .then((data) => {
+        if (data) {
+          const user = new User(data);
+          user.setPassword(data.password);
+          return user;
+        }
+        return null;
+      });
   }
 
   private userExists(id: string): Promise<User> {
     if (!isValidObjectId(id)) {
       throw new BadRequestException({ message: 'invalid user Id' });
     }
-    const user = this.userModel.findById(id).then((result) => new User(result));
+    const user = this.userModel
+      .findOne({ _id: id, deletedAt: null })
+      .then((result) => new User(result));
     if (!user) {
       throw new NotFoundException({ message: 'user not found' });
     }
@@ -79,7 +83,7 @@ export class UserService {
     username: string,
     id: string = null,
   ): Promise<void> {
-    const query = { username };
+    const query = { username, deletedAt: null };
     if (id) {
       query['_id'] = { $ne: id };
     }

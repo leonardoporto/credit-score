@@ -1,7 +1,12 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { Model } from 'mongoose';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+  PreconditionFailedException,
+} from '@nestjs/common';
+import { isValidObjectId, Model } from 'mongoose';
 import { ApiTags } from '@nestjs/swagger';
-import { CreateCustomerDto, UpdateCustomerDto } from './dto';
 import { User as UserInterface } from '@/user/interfaces/user.interface';
 import { User } from '@/user/entities/user.entity';
 import { Debt, Patrimony } from './entities';
@@ -40,5 +45,22 @@ export class CustomerService {
     }
 
     return Math.round((diference * 100) / totalPatrimony) * 10;
+  }
+
+  async isValidCustomer(id: string): Promise<void> {
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException({ message: 'invalid user Id' });
+    }
+    const user = await this.userModel
+      .findOne({ _id: id, deletedAt: null })
+      .then((result) => new User(result));
+    if (!user) {
+      throw new NotFoundException({ message: 'customer not found' });
+    }
+    if (user.role !== 'customer') {
+      throw new PreconditionFailedException({
+        message: 'the user is not a customer',
+      });
+    }
   }
 }
