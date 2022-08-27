@@ -10,7 +10,7 @@ import { CustomerModule } from './customer/customer.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     CacheModule.register(
       ['development', 'test'].includes(process.env.NODE_ENV)
         ? { isGlobal: true, ttl: 86400 }

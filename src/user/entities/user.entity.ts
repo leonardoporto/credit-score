@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { User as UserInterface } from '../interfaces/user.interface';
 
+import * as crypto from 'crypto';
 export class User {
   @ApiProperty()
   public userId: string;
@@ -21,7 +22,12 @@ export class User {
   }
 
   validatePassword(password) {
-    return password === this.password;
+    const hash = crypto
+      .createHash('sha256')
+      .update(password, 'utf8')
+      .digest('hex')
+      .toString();
+    return hash === this.password;
   }
 
   invalidatePassword() {

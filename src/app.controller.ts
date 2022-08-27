@@ -26,14 +26,14 @@ export class AppController {
 
   @ApiOperation({ summary: 'Authenticate' })
   @UseGuards(AuthGuard('local'))
-  @Post('auth/login')
+  @Post('authenticate')
   async login(@Request() req) {
     return this.authService.login(req.user);
   }
 
-  @ApiOperation({ summary: 'Authenticate' })
+  @ApiOperation({ summary: 'Your Data' })
   @UseGuards(JwtAuthGuard)
-  @Get('profile')
+  @Get('me')
   getProfile(@Request() req) {
     return req.user;
   }
