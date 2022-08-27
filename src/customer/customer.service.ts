@@ -38,8 +38,6 @@ export class CustomerService {
 
     const diference = totalPatrimony - totalDebts;
 
-    console.log({ totalPatrimony, totalDebts, diference });
-
     if (diference <= 0) {
       return 0;
     }
@@ -53,7 +51,7 @@ export class CustomerService {
     }
     const user = await this.userModel
       .findOne({ _id: id, deletedAt: null })
-      .then((result) => new User(result));
+      .then((result) => result && new User(result));
     if (!user) {
       throw new NotFoundException({ message: 'customer not found' });
     }
