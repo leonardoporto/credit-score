@@ -1,5 +1,6 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import redisStore from 'cache-manager-redis-store';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
@@ -10,6 +11,18 @@ import { CustomerModule } from './customer/customer.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    CacheModule.register(
+      ['development', 'test'].includes(process.env.NODE_ENV)
+        ? { isGlobal: true, ttl: 86400 }
+        : {
+            isGlobal: true,
+            ttl: 86400,
+            store: redisStore,
+            host: process.env.REDIS_URI,
+            port: 6379,
+            db: 0,
+          },
+    ),
     DatabaseModule,
     CustomerModule,
     UserModule,
