@@ -41,8 +41,7 @@ export class CustomerController {
   @Roles(Role.Admin, Role.Customer)
   @Get(':id')
   async findOne(@Param('id') userId: string) {
-    await this.customerService.isValidCustomer(userId);
-    const customer = await this.customerService.findOne(userId);
+    const customer = await this.customerService.existsCustomer(userId);
     const patrimonies = await this.patrimonyService.findByUserId(userId);
     const debts = await this.debtService.findByUserId(userId);
     return { ...customer, patrimonies, debts };
@@ -54,7 +53,7 @@ export class CustomerController {
   @Roles(Role.Admin, Role.Customer)
   @Get(':id/credit-score')
   async creditScore(@Param('id') userId: string) {
-    await this.customerService.isValidCustomer(userId);
+    await this.customerService.existsCustomer(userId);
     const patrimonies = await this.patrimonyService.findByUserId(userId);
     const debts = await this.debtService.findByUserId(userId);
     return this.customerService.creditScore(patrimonies, debts);
@@ -69,7 +68,7 @@ export class CustomerController {
     @Param('id') userId: string,
     @Body() createPatrimonyDto: CreatePatrimonyDto,
   ) {
-    await this.customerService.isValidCustomer(userId);
+    await this.customerService.existsCustomer(userId);
     return this.patrimonyService.create({
       ...createPatrimonyDto,
       userId: userId,
@@ -86,7 +85,7 @@ export class CustomerController {
     @Param('patrimonyId') patrimonyId: string,
     @Body() updatePatrimonyDto: UpdatePatrimonyDto,
   ) {
-    await this.customerService.isValidCustomer(userId);
+    await this.customerService.existsCustomer(userId);
     return this.patrimonyService.update(patrimonyId, updatePatrimonyDto);
   }
 
@@ -100,7 +99,7 @@ export class CustomerController {
     @Param('id') userId: string,
     @Param('patrimonyId') patrimonyId: string,
   ) {
-    await this.customerService.isValidCustomer(userId);
+    await this.customerService.existsCustomer(userId);
     return this.patrimonyService.remove(patrimonyId);
   }
 
@@ -113,7 +112,7 @@ export class CustomerController {
     @Param('id') userId: string,
     @Body() createDebtDto: CreateDebtDto,
   ) {
-    await this.customerService.isValidCustomer(userId);
+    await this.customerService.existsCustomer(userId);
     return this.debtService.create({ ...createDebtDto, userId: userId });
   }
 
@@ -127,7 +126,7 @@ export class CustomerController {
     @Param('debtId') debtId: string,
     @Body() updateDebtDto: UpdateDebtDto,
   ) {
-    await this.customerService.isValidCustomer(userId);
+    await this.customerService.existsCustomer(userId);
     return this.debtService.update(debtId, updateDebtDto);
   }
 
@@ -141,7 +140,7 @@ export class CustomerController {
     @Param('id') userId: string,
     @Param('debtId') debtId: string,
   ) {
-    await this.customerService.isValidCustomer(userId);
+    await this.customerService.existsCustomer(userId);
     return this.debtService.remove(debtId);
   }
 }

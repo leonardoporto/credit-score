@@ -54,13 +54,13 @@ export class PatrimonyService {
     return result.acknowledged;
   }
 
-  private patrimonyExists(id: string): Promise<Patrimony> {
+  private async patrimonyExists(id: string): Promise<Patrimony> {
     if (!isValidObjectId(id)) {
       throw new BadRequestException({ message: 'invalid patrimony Id' });
     }
-    const patrimony = this.patrimomyModel
+    const patrimony = await this.patrimomyModel
       .findOne({ _id: id, deletedAt: null })
-      .then((result) => new Patrimony(result));
+      .then((result) => result && new Patrimony(result));
     if (!patrimony) {
       throw new NotFoundException({ message: 'patrimony not found' });
     }

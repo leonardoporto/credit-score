@@ -8,24 +8,13 @@ import {
 import { isValidObjectId, Model } from 'mongoose';
 import { ApiTags } from '@nestjs/swagger';
 import { User as UserInterface } from '@/user/interfaces/user.interface';
-import { User } from '@/user/entities/user.entity';
+import { User } from '../user/entities/user.entity';
 import { Debt, Patrimony } from './entities';
 
 @ApiTags('customer')
 @Injectable()
 export class CustomerService {
   constructor(@Inject('USER_MODEL') private userModel: Model<UserInterface>) {}
-
-  findOne(id: string) {
-    return this.userModel
-      .findOne({ _id: id, role: 'customer' })
-      .then((result) => {
-        if (!result) {
-          throw new NotFoundException();
-        }
-        return new User(result);
-      });
-  }
 
   creditScore(patrimonies: Patrimony[], debts: Debt[]): number {
     const totalPatrimony = patrimonies.reduce((response, patrimony) => {
@@ -45,7 +34,7 @@ export class CustomerService {
     return Math.round((diference * 100) / totalPatrimony) * 10;
   }
 
-  async isValidCustomer(id: string): Promise<void> {
+  async existsCustomer(id: string): Promise<User> {
     if (!isValidObjectId(id)) {
       throw new BadRequestException({ message: 'invalid user Id' });
     }
@@ -60,5 +49,7 @@ export class CustomerService {
         message: 'the user is not a customer',
       });
     }
+
+    return user;
   }
 }

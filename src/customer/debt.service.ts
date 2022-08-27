@@ -28,10 +28,6 @@ export class DebtService {
       .then((result) => new Debt(result));
   }
 
-  async findOne(id: string): Promise<Debt> {
-    return this.debtExists(id);
-  }
-
   async findByUserId(userId: string): Promise<Debt[]> {
     return this.debtModel
       .find({ userId, deletedAt: null })
@@ -47,13 +43,13 @@ export class DebtService {
     return result.acknowledged;
   }
 
-  private debtExists(id: string): Promise<Debt> {
+  private async debtExists(id: string): Promise<Debt> {
     if (!isValidObjectId(id)) {
       throw new BadRequestException({ message: 'invalid debt Id' });
     }
-    const debt = this.debtModel
+    const debt = await this.debtModel
       .findOne({ _id: id, deletedAt: null })
-      .then((result) => new Debt(result));
+      .then((result) => result && new Debt(result));
     if (!debt) {
       throw new NotFoundException({ message: 'debt not found' });
     }

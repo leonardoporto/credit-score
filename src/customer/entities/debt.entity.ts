@@ -4,7 +4,7 @@ import { Debt as DebtInterface } from '../interfaces';
 
 export class Debt {
   @ApiProperty()
-  public patrimonyId: string;
+  public debtId: string;
 
   @ApiProperty()
   public userId: string;
@@ -19,7 +19,7 @@ export class Debt {
   public deletedAt: Date;
 
   constructor(data: DebtInterface) {
-    this.patrimonyId = data._id;
+    this.debtId = data._id;
     this.userId = data.userId;
     this.description = data.description;
     this.amount = data.amount;

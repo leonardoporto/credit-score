@@ -27,21 +27,23 @@ export class UserService {
       .then((result) => result.map((item) => new User(item)));
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     return this.userExists(id);
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     await this.userExists(id);
     await this.isDuplicated(updateUserDto.username, id);
-    if (updateUserDto.password) {
-      updateUserDto.password = crypto
-        .createHash('sha256')
-        .update(updateUserDto.password, 'utf8')
-        .digest('hex')
-        .toString();
-    }
-    return this.userModel.updateOne({ _id: id }, { $set: updateUserDto });
+    return this.userModel
+      .findOneAndUpdate({ _id: id }, { $set: updateUserDto }, { new: true })
+      .then((result) => {
+        if (result) {
+          const user = new User(result);
+          user.setPassword(result.password);
+          return user;
+        }
+        return null;
+      });
   }
 
   async remove(id: string): Promise<boolean> {
@@ -66,13 +68,13 @@ export class UserService {
       });
   }
 
-  private userExists(id: string): Promise<User> {
+  private async userExists(id: string): Promise<User> {
     if (!isValidObjectId(id)) {
       throw new BadRequestException({ message: 'invalid user Id' });
     }
-    const user = this.userModel
+    const user = await this.userModel
       .findOne({ _id: id, deletedAt: null })
-      .then((result) => new User(result));
+      .then((result) => result && new User(result));
     if (!user) {
       throw new NotFoundException({ message: 'user not found' });
     }
