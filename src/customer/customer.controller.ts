@@ -47,7 +47,6 @@ export class CustomerController {
     const customer = await this.customerService.findOne(id);
     const patrimonies = await this.patrimonyService.findByUserId(id);
     const debts = await this.debtService.findByUserId(id);
-    customer.invalidatePassword();
     return { ...customer, patrimonies, debts };
   }
 

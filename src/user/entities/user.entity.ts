@@ -12,13 +12,15 @@ export class User {
   @ApiProperty()
   public role: 'admin' | 'customer';
   private password: string;
+  @ApiProperty()
+  public deletedAt: Date;
 
   constructor(data: UserInterface) {
     this.userId = data._id;
     this.username = data.username;
     this.name = data.name;
     this.role = data.role;
-    this.password = data.password;
+    this.deletedAt = data.deletedAt;
   }
 
   validatePassword(password) {
@@ -30,7 +32,7 @@ export class User {
     return hash === this.password;
   }
 
-  invalidatePassword() {
-    this.password = null;
+  setPassword(password) {
+    this.password = password;
   }
 }
