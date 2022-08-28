@@ -1,73 +1,68 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
+  <img src="https://thumbs.dreamstime.com/b/credit-score-gauge-rating-meter-vector-icon-flat-style-isolated-white-background-107738613.jpg" width="200" alt="Credit Score Logo" />
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+<p align="center">Calculo de score de crédito baseado no patrimônio e dívidas de uma pessoa.</p>
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+## Descrição
+Credit Score é uma api que baseado nos dados enviados irá calcular o score de crédito.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### O Cáculo
 
-## Installation
+Vamos supor que Ludovico possui o seguinte cenário:
 
-```bash
-$ npm install
+Patrimônios(**P**):
+- Apartamento no valor de R$ 513.000,00
+- Casa na praia no valor de R$ 1.200.000,00
+- Carro - R$ 67.000,00
+
+Dívidas(**D**):
+- Financiamento da Casa na Praia - R$ 1.200.000,00
+
+Então calculamos a diferenca(**P-D**): R$ 580.000,00, que indica o que não está comprometido nas dívidas.
+
+Baseado na diferença realizamos o seguint calculo para descobrir o score:
+```
+_(580.000 * 1000) / 1.780.000_ = 325
 ```
 
-## Running the app
+Assim Score do Ludovico é de **325**. 
+
+## Como Executar o projeto
+
+Para rodar o projeto será necessário o Node.js e para controlar as versões de forma mais facil sugiro a utilização do nvm.
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+# clonar o projeto
+$ git clone git@github.com:leonardoporto/credit-score.git
+# Acesar a pasta do projeto
+$ cd credit-score
+# criar o .env
+$ cp .env.example .env
 ```
-
-## Test
+Agora para rodar o projeto temos 2 opções, a primeira será nessário o redis e mongodb externos, na segunda opção somente o Docker.
+### Via script
 
 ```bash
-# unit tests
-$ npm run test
+#instalar as dependências
+$ yarn install
+#executar o projeto
+$ yarn start:dev
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
 
-## Support
+### Via Docker
+```bash
+$ docker-compose up
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+## Tecologias utilizadas
+- TypeScript
+- MongoDb
+- Redis
+- Mongoose
+- Jest
+- Nestjs
+- Redoc
+- Docker

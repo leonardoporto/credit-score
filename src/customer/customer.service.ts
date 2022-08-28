@@ -31,7 +31,7 @@ export class CustomerService {
       return 0;
     }
 
-    return Math.round((diference * 100) / totalPatrimony) * 10;
+    return Math.round((diference * 1000) / totalPatrimony);
   }
 
   async existsCustomer(id: string): Promise<User> {
