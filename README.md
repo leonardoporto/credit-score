@@ -2,13 +2,9 @@
   <img src="https://thumbs.dreamstime.com/b/credit-score-gauge-rating-meter-vector-icon-flat-style-isolated-white-background-107738613.jpg" width="200" alt="Credit Score Logo" />
 </p>
 
-<p align="center">Calculo de score de crédito baseado no patrimônio e dívidas de uma pessoa.</p>
+<p align="center">Cálculo de score de crédito baseado no patrimônio e dívidas de uma pessoa.</p>
 
-
-## Descrição
-Credit Score é uma api que baseado nos dados enviados irá calcular o score de crédito.
-
-### O Cáculo
+### O Cálculo
 
 Vamos supor que Ludovico possui o seguinte cenário:
 
