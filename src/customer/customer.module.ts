@@ -5,7 +5,7 @@ import { debtsProviders, patrimoniesProviders } from './providers';
 import { DebtService } from './debt.service';
 import { PatrimonyService } from './patrimony.service';
 import { usersProviders } from '@/user/user.providers';
-
+console.log('customer', process.env.NODE_ENV);
 @Module({
   controllers: [CustomerController],
   providers: [

@@ -8,6 +8,7 @@ import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { CustomerModule } from './customer/customer.module';
 
+console.log('app', process.env.NODE_ENV);
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),

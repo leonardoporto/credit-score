@@ -26,7 +26,7 @@ services:
       - .:/usr/app
     ports: 
       - 7000:7000
-    command: yarn start:dev
+    command: yarn start
     env_file:
       - .env
     links:
