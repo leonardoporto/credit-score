@@ -20,7 +20,7 @@ Então calculamos a diferenca(**P-D**): R$ 580.000,00, que indica o que não est
 
 Baseado na diferença realizamos o seguint calculo para descobrir o score:
 ```
-_(580.000 * 1000) / 1.780.000_ = 325
+(580.000 * 1000) / 1.780.000 = 326
 ```
 
 Assim Score do Ludovico é de **325**. 
@@ -43,6 +43,8 @@ Agora para rodar o projeto temos 2 opções, a primeira será nessário o redis 
 ```bash
 #instalar as dependências
 $ yarn install
+# criar o usuario administrador
+$ yarn migrate:up
 #executar o projeto
 $ yarn start:dev
 
@@ -52,6 +54,11 @@ $ yarn start:dev
 ```bash
 $ docker-compose up
 ```
+
+### Usuário Admin
+O usuário inicial possui o seguintes dados de acesso:
+- username: admin
+- password: 1qaz2wsx
 
 ## Tecologias utilizadas
 - TypeScript
