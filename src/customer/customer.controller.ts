@@ -9,7 +9,11 @@ import {
   Delete,
   UseGuards,
   HttpCode,
+  CACHE_MANAGER,
+  Inject,
 } from '@nestjs/common';
+
+import { Cache } from 'cache-manager';
 import {
   ApiCreatedResponse,
   ApiNoContentResponse,
@@ -33,6 +37,7 @@ export class CustomerController {
     private readonly customerService: CustomerService,
     private readonly patrimonyService: PatrimonyService,
     private readonly debtService: DebtService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   @ApiOperation({ summary: 'Find Customer' })
@@ -41,10 +46,17 @@ export class CustomerController {
   @Roles(Role.Admin, Role.Customer)
   @Get(':id')
   async findOne(@Param('id') userId: string) {
-    const customer = await this.customerService.existsCustomer(userId);
-    const patrimonies = await this.patrimonyService.findByUserId(userId);
-    const debts = await this.debtService.findByUserId(userId);
-    return { ...customer, patrimonies, debts };
+    let customerData = await this.cacheManager.get(`data_${userId}`);
+    if (!customerData) {
+      const customer = await this.customerService.existsCustomer(userId);
+      const patrimonies = await this.patrimonyService.findByUserId(userId);
+      const debts = await this.debtService.findByUserId(userId);
+      customerData = { ...customer, patrimonies, debts };
+      await this.cacheManager.set(`data_${userId}`, customerData, {
+        ttl: 3600,
+      });
+    }
+    return customerData;
   }
 
   @ApiOperation({ summary: 'Calculate Credit Score' })
@@ -53,10 +65,16 @@ export class CustomerController {
   @Roles(Role.Admin, Role.Customer)
   @Get(':id/credit-score')
   async creditScore(@Param('id') userId: string) {
-    await this.customerService.existsCustomer(userId);
-    const patrimonies = await this.patrimonyService.findByUserId(userId);
-    const debts = await this.debtService.findByUserId(userId);
-    return this.customerService.creditScore(patrimonies, debts);
+    let score = await this.cacheManager.get(`score_${userId}`);
+    if (!score) {
+      await this.customerService.existsCustomer(userId);
+      const patrimonies = await this.patrimonyService.findByUserId(userId);
+      const debts = await this.debtService.findByUserId(userId);
+      score = this.customerService.creditScore(patrimonies, debts);
+      await this.cacheManager.set(`score_${userId}`, score, { ttl: 3600 });
+    }
+
+    return score;
   }
 
   @ApiOperation({ summary: 'Create patrimony' })
@@ -69,6 +87,8 @@ export class CustomerController {
     @Body() createPatrimonyDto: CreatePatrimonyDto,
   ) {
     await this.customerService.existsCustomer(userId);
+    await this.cacheManager.del(`data_${userId}`);
+    await this.cacheManager.del(`score_${userId}`);
     return this.patrimonyService.create({
       ...createPatrimonyDto,
       userId: userId,
@@ -86,6 +106,8 @@ export class CustomerController {
     @Body() updatePatrimonyDto: UpdatePatrimonyDto,
   ) {
     await this.customerService.existsCustomer(userId);
+    await this.cacheManager.del(`data_${userId}`);
+    await this.cacheManager.del(`score_${userId}`);
     return this.patrimonyService.update(patrimonyId, updatePatrimonyDto);
   }
 
@@ -100,6 +122,8 @@ export class CustomerController {
     @Param('patrimonyId') patrimonyId: string,
   ) {
     await this.customerService.existsCustomer(userId);
+    await this.cacheManager.del(`data_${userId}`);
+    await this.cacheManager.del(`score_${userId}`);
     return this.patrimonyService.remove(patrimonyId);
   }
 
@@ -113,6 +137,8 @@ export class CustomerController {
     @Body() createDebtDto: CreateDebtDto,
   ) {
     await this.customerService.existsCustomer(userId);
+    await this.cacheManager.del(`data_${userId}`);
+    await this.cacheManager.del(`score_${userId}`);
     return this.debtService.create({ ...createDebtDto, userId: userId });
   }
 
@@ -127,6 +153,8 @@ export class CustomerController {
     @Body() updateDebtDto: UpdateDebtDto,
   ) {
     await this.customerService.existsCustomer(userId);
+    await this.cacheManager.del(`data_${userId}`);
+    await this.cacheManager.del(`score_${userId}`);
     return this.debtService.update(debtId, updateDebtDto);
   }
 
@@ -141,6 +169,8 @@ export class CustomerController {
     @Param('debtId') debtId: string,
   ) {
     await this.customerService.existsCustomer(userId);
+    await this.cacheManager.del(`data_${userId}`);
+    await this.cacheManager.del(`score_${userId}`);
     return this.debtService.remove(debtId);
   }
 }
