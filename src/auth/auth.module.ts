@@ -7,7 +7,6 @@ import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { jwtConstants } from './constants';
-console.log('auth', process.env.NODE_ENV);
 @Module({
   imports: [
     ConfigModule.forRoot(),

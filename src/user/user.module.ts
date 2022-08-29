@@ -3,7 +3,6 @@ import { ConfigModule } from '@nestjs/config';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { usersProviders } from './user.providers';
-console.log('user', process.env.NODE_ENV);
 @Module({
   imports: [ConfigModule.forRoot()],
   controllers: [UserController],
