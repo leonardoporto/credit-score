@@ -60,6 +60,14 @@ O usuário inicial possui o seguintes dados de acesso:
 - username: admin
 - password: 1qaz2wsx
 
+## Documentação da api
+
+Para acessar a documentação basta acessar o http://localhost:7000/docs. (depois de rodar o projeto)
+
+<p align="center">
+  <a href="https://github.com/leonardoporto/credit-score/blob/main/insomnia.json" target="_blank"><img src="https://insomnia.rest/images/run.svg" alt="Run in Insomnia"></a>
+</p>
+
 ## Tecologias utilizadas
 - TypeScript
 - MongoDb
